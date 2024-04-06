@@ -35,7 +35,7 @@ function handleClickPrevious () {
     <v-main>
       <v-container>
         <div class="d-flex justify-space-between align-end mb-6">
-          <h1 class="text-h1">Movie Calendar</h1>
+          <h1 class="text-h1">Filmkalender</h1>
           <div>
             <v-btn variant="outlined" @click="handleClickPrevious" class="mr-4">Förra månaden</v-btn>
             <v-btn variant="outlined" @click="handleClickNext">Nästa månad</v-btn>
