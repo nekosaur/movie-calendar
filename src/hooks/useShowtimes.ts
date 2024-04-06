@@ -14,18 +14,23 @@ export type Showtime = {
   tags: string[];
 }
 
+type ShowtimeEvent = {
+  start: Date;
+  end: Date;
+} & Showtime;
+
 export function useShowtimes() {
-  const showtimes = ref([]);
+  const showtimes = ref<ShowtimeEvent[]>([]);
 
   async function load() {
-    const response = await axios.get("/api/showtimes")
+    const response = await axios.get<Showtime[]>("/api/showtimes")
 
     console.log(response.data);
     showtimes.value = response.data.map((showtime: Showtime) => ({
       start: new Date(showtime.time),
       end: new Date(showtime.time),
       ...showtime,
-    })).sort((a, b) => a.start - b.start)
+    })).sort((a, b) => a.start.getTime() - b.start.getTime())
   }
 
   onMounted(() => {

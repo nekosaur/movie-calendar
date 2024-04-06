@@ -42,7 +42,7 @@ function handleClickPrevious () {
           </div>
         </div>
         <v-calendar view-mode="month" v-model="date" :events="showtimes" hide-week-number hide-header>
-          <template #event="{ event }"  >
+          <!-- <template #event="{ event }"  >
             <v-chip
               :class="[
                 'mb-2',
@@ -55,7 +55,7 @@ function handleClickPrevious () {
             >
               {{format(event.start)}} {{event.movie.title}}
             </v-chip>
-          </template>
+          </template> -->
         </v-calendar>
       </v-container>
     </v-main>
