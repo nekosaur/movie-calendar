@@ -5,13 +5,13 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   server: {
-    open: true,
+    open: false,
     proxy: {
       '/api': {
         target: 'http://localhost:8888/.netlify/functions',
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, ''),
-      },
-    },
-  },
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  }
 })
