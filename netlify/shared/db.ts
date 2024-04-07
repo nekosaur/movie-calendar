@@ -4,6 +4,7 @@ import mongoose, { ConnectOptions } from 'mongoose'
 const uri = process.env.MONGODB_URI
 
 const clientOptions: Partial<ConnectOptions> = {
+  connectTimeoutMS: 5000,
   serverApi: { version: '1', strict: true, deprecationErrors: true }
 }
 
