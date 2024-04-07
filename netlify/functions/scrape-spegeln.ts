@@ -152,6 +152,6 @@ export default async (_req: Request) => {
   })
 }
 
-export const config: Config = {
-  schedule: '@hourly'
-}
+// export const config: Config = {
+//   schedule: '@hourly'
+// }
