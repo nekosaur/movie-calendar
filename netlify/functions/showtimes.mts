@@ -7,6 +7,11 @@ export default async (_req: Request, _context: Context) => {
   return withDatabase(async () => {
     const showtimes = await ShowtimeModel.find().populate('movie').exec()
 
-    return new Response(JSON.stringify(showtimes))
+    return new Response(JSON.stringify(showtimes), {
+      headers: {
+        'Netlify-CDN-Cache-Control':
+          'public, max-age=0, stale-while-revalidate=86400'
+      }
+    })
   })
 }
