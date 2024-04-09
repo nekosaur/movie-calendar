@@ -12,7 +12,6 @@ mongoose.plugin(upsertMany)
 
 export async function withDatabase<T>(callback: () => Promise<T>) {
   try {
-    console.log('connecting to ', uri)
     // @ts-expect-error connect method require whole options object for some reason
     await mongoose.connect(uri, clientOptions)
     console.log('connected')

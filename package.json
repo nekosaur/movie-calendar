@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@netlify/functions": "^2.6.0",
-    "axios": "^1.6.8",
     "date-fns": "^3.6.0",
+    "date-fns-tz": "^3.0.0",
     "mongoose": "^8.3.0",
     "node-html-parser": "^6.1.13",
     "vue": "^3.4.21",

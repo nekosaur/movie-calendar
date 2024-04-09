@@ -2,18 +2,11 @@
 import { ref } from 'vue'
 import { useShowtimes, ShowtimeEvent } from './hooks/useShowtimes'
 import { useDate } from 'vuetify'
-import { format } from 'date-fns'
+import { format } from 'date-fns-tz'
+import ShowtimeDetailsDialog from './components/ShowtimeDetailsDialog.vue'
 
+const { showtimes, isLoading } = useShowtimes()
 const date = ref([new Date()])
-const { showtimes } = useShowtimes()
-
-// function format(date: Date) {
-//   return `${date.getHours()}:${String(date.getUTCMinutes()).padStart(2, '0')}`
-// }
-
-// function formatMonth(date: Date) {
-//   return `${date.getUTCMonth()}`
-// }
 
 const showShowtimeDetails = ref(false)
 const showtimeDetails = ref<ShowtimeEvent | null>(null)
@@ -37,7 +30,7 @@ function handleClickPrevious() {
 <template>
   <v-app>
     <v-main>
-      <v-container>
+      <v-container class="d-flex flex-column h-100">
         <div class="d-flex justify-space-between align-end mb-6">
           <h1 class="text-h1">Filmkalender</h1>
           <div class="d-flex align-items">
@@ -50,67 +43,61 @@ function handleClickPrevious() {
             >
           </div>
         </div>
-        <v-calendar
-          v-model="date"
-          view-mode="month"
-          :events="showtimes"
-          hide-week-number
-          hide-header
-        >
-          <template #event="{ event }">
-            <v-chip
-              :class="['mb-2', event.soldOut && 'text-decoration-line-through']"
-              tag="div"
-              :color="event.theater === 'spegeln' ? '#2c412f' : '#cc0028'"
-              density="compact"
-              @click="() => handleShowtimeClick(event as any as ShowtimeEvent)"
+
+        <div :style="{ position: 'relative' }">
+          <v-calendar
+            v-model="date"
+            view-mode="month"
+            :events="showtimes"
+            hide-week-number
+            hide-header
+          >
+            <template #event="{ event }">
+              <v-chip
+                :class="[
+                  'mb-2',
+                  event.soldOut && 'text-decoration-line-through'
+                ]"
+                tag="div"
+                :color="event.theater === 'spegeln' ? '#2c412f' : '#cc0028'"
+                density="compact"
+                @click="
+                  () => handleShowtimeClick(event as any as ShowtimeEvent)
+                "
+              >
+                {{
+                  format((event as any as ShowtimeEvent).start, 'HH:mm', {
+                    timeZone: 'Europe/Stockholm'
+                  })
+                }}
+                {{ (event as any as ShowtimeEvent).movie.title }}
+              </v-chip>
+            </template>
+          </v-calendar>
+
+          <v-fade-transition>
+            <div
+              v-if="isLoading"
+              class="d-flex align-center justify-center flex-grow-1 w-100 h-100"
+              :style="{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                background: 'rgba(0, 0, 0, 0.05)'
+              }"
             >
-              {{ format((event as any as ShowtimeEvent).start, 'HH:mm') }}
-              {{ (event as any as ShowtimeEvent).movie.title }}
-            </v-chip>
-          </template>
-        </v-calendar>
+              <v-progress-circular indeterminate />
+            </div>
+          </v-fade-transition>
+        </div>
       </v-container>
     </v-main>
 
-    <v-dialog v-model="showShowtimeDetails" max-width="800">
-      <v-card>
-        <v-card-item>
-          <v-card-title class="d-flex justify-space-between align-center">
-            {{ showtimeDetails?.movie.title }}
-
-            <div>
-              <v-chip
-                density="compact"
-                class="text-capitalize"
-                :color="
-                  showtimeDetails?.theater === 'spegeln' ? '#2c412f' : '#cc0028'
-                "
-                >{{ showtimeDetails?.theater }}</v-chip
-              >
-              <template v-for="tag in showtimeDetails?.tags" :key="tag">
-                <v-chip density="compact" class="ml-2">{{ tag }}</v-chip>
-              </template>
-            </div>
-          </v-card-title>
-        </v-card-item>
-
-        <v-card-text>
-          <div v-html="showtimeDetails?.movie.synopsis" />
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn
-            variant="outlined"
-            text="Boka biljett"
-            target="_blank"
-            :href="showtimeDetails?.url"
-          ></v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <!-- @vue-ignore TODO: why is showtime complaining? it's the same type on both sides -->
+    <ShowtimeDetailsDialog
+      v-model="showShowtimeDetails"
+      :showtime="showtimeDetails"
+    ></ShowtimeDetailsDialog>
   </v-app>
 </template>
 
