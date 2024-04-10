@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, defineModel, toRef, PropType } from 'vue'
+import { defineModel, toRef, PropType } from 'vue'
 import { useTmdb } from '../hooks/useTmdb'
 import { ShowtimeEvent } from '../hooks/useShowtimes'
 

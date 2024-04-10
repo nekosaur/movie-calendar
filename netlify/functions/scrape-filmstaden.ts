@@ -2,7 +2,6 @@ import type { Config } from '@netlify/functions'
 import { withDatabase } from '../shared/db'
 import { MovieModel } from '../shared/movies/movie.schema'
 import type { Movie } from '../shared/movies/movie.schema'
-import axios from 'axios'
 import { ShowtimeModel } from '../shared/showtimes/showtime.schema'
 import type { Showtime } from '../shared/showtimes/showtime.schema'
 
@@ -34,11 +33,11 @@ type FilmstadenShowJson = {
 }
 
 async function scrapeMovies() {
-  const response = await axios.get(
+  const fetched = await fetch(
     'https://services.cinema-api.com/movie/upcoming/sv/1/1024/false'
   )
 
-  const data = response.data as FilmstadenMovieJson
+  const data = (await fetched.json()) as FilmstadenMovieJson
 
   const models = data.items
     .filter(
@@ -73,11 +72,11 @@ async function scrapeShowtimes(movies: Movie[]) {
     movies.map((movie) => [movie.sourceId, movie])
   )
 
-  const response = await axios.get(
+  const fetched = await fetch(
     'https://services.cinema-api.com/show/stripped/sv/1/1024/?CountryAlias=se&CityAlias=MA&Channel=Web'
   )
 
-  const data = response.data as FilmstadenShowJson
+  const data = (await fetched.json()) as FilmstadenShowJson
 
   const models = data.items
     .filter((showtime) => moviesBySourceId.has(showtime.mId))

@@ -2,7 +2,6 @@ import type { Config } from '@netlify/functions'
 import { withDatabase } from '../shared/db'
 import { MovieModel } from '../shared/movies/movie.schema'
 import type { Movie } from '../shared/movies/movie.schema'
-import axios from 'axios'
 import { parse } from 'node-html-parser'
 import { ShowtimeModel } from '../shared/showtimes/showtime.schema'
 import type { Showtime } from '../shared/showtimes/showtime.schema'
@@ -70,9 +69,11 @@ const EXCLUDE_GENRES = [
 
 export default async (_req: Request) => {
   return withDatabase(async () => {
-    const response = await axios.get('https://biografspegeln.se/program')
+    const fetched = await fetch('https://biografspegeln.se/program')
 
-    const html = parse(response.data)
+    const text = await fetched.text()
+
+    const html = parse(text)
 
     const script = html.querySelector('script#__NEXT_DATA__')
 
