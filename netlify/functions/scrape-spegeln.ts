@@ -5,6 +5,7 @@ import type { Showtime } from '../shared/showtimes/showtime.schema'
 import { MovieService } from '../shared/movies/movie.service'
 import { NetlifyStore } from '../shared/store/netlify.store'
 import { ShowtimeService } from '../shared/showtimes/showtime.service'
+import { fromZonedTime } from 'date-fns-tz'
 
 type SpegelnNextData = {
   props: {
@@ -124,7 +125,7 @@ export default async (_req: Request) => {
   const showtimes = schedules.flatMap((showtime) =>
     showtime.dates.map<Showtime>((date) => ({
       movie: `spegeln/${showtime.featureId}`,
-      time: new Date(date.startDate),
+      time: fromZonedTime(date.startDate, 'Europe/Stockholm'),
       theater: 'spegeln',
       soldOut: date.soldOut,
       url: date.ticksterLink,
@@ -133,17 +134,6 @@ export default async (_req: Request) => {
   )
 
   await showtimeService.upsertMany(showtimes, 'spegeln')
-
-  console.log(
-    JSON.stringify(schedules.slice(0, 5), null, 2),
-    showtimes.slice(0, 5)
-  )
-
-  console.log(
-    Date.parse(schedules[1].dates[0].startDate),
-    new Date(`${schedules[1].dates[0].startDate}`),
-    new Date(`${schedules[1].dates[0].startDate}Z`)
-  )
 
   console.log('OK!')
 
