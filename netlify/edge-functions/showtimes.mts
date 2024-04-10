@@ -8,8 +8,6 @@ export default async (_req: Request, _context: Context) => {
   const movieStore = new NetlifyStore<Movie>('movies')
   const showtimes = await showtimeStore.list()
 
-  console.log('len', showtimes.length)
-
   const promises = showtimes.map(async (showtimeKey) => {
     const showtime = await showtimeStore.get(showtimeKey)
     const movie = await movieStore.get(showtime.movie)
