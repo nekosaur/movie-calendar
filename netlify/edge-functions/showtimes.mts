@@ -1,4 +1,4 @@
-import type { Context } from '@netlify/edge-functions'
+import type { Config, Context } from '@netlify/edge-functions'
 import { NetlifyStore } from '../shared/store/netlify.store.ts'
 import type { Showtime } from '../shared/showtimes/showtime.schema.ts'
 import type { Movie } from '../shared/movies/movie.schema.ts'
@@ -30,4 +30,4 @@ export default async (_req: Request, _context: Context) => {
   })
 }
 
-export const config = { path: '/api/showtimes' }
+export const config: Config = { cache: 'manual', path: '/api/showtimes' }
