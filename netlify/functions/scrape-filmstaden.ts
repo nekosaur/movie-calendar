@@ -100,6 +100,6 @@ export default async (_req: Request) => {
   return new Response('OK!')
 }
 
-// export const config: Config = {
-//   schedule: '@hourly'
-// }
+export const config: Config = {
+  schedule: '@daily'
+}
