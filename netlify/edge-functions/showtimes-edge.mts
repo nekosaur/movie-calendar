@@ -30,4 +30,4 @@ export default async (_req: Request, _context: Context) => {
   })
 }
 
-export const config = { path: '/api/showtimes-edge' }
+export const config = { path: '/api/showtimes' }

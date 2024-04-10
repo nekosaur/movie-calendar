@@ -39,7 +39,7 @@ export function useShowtimes() {
         !hasFetched && (isLoading.value = true)
       }, 300)
 
-      const response = await fetch('/api/showtimes-edge')
+      const response = await fetch('/api/showtimes')
 
       hasFetched = true
 
