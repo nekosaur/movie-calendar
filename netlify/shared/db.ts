@@ -1,4 +1,4 @@
-import mongoose, { ConnectOptions } from 'mongoose'
+import { connect, disconnect, ConnectOptions } from 'mongoose'
 
 // @ts-expect-error TODO fix this
 const uri = process.env.MONGODB_URI
@@ -8,12 +8,14 @@ const clientOptions: Partial<ConnectOptions> = {
   serverApi: { version: '1', strict: true, deprecationErrors: true }
 }
 
-mongoose.plugin(upsertMany)
+console.log('foo', connect)
+
+// mongoose.plugin(upsertMany)
 
 export async function withDatabase<T>(callback: () => Promise<T>) {
   try {
     // @ts-expect-error connect method require whole options object for some reason
-    await mongoose.connect(uri, clientOptions)
+    await connect(uri, clientOptions)
     console.log('connected')
 
     const result = await callback()
@@ -24,7 +26,7 @@ export async function withDatabase<T>(callback: () => Promise<T>) {
     throw e
   } finally {
     console.log('disconnect')
-    await mongoose.disconnect()
+    await disconnect()
   }
 }
 

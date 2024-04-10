@@ -1,10 +1,10 @@
 import type { Config } from '@netlify/functions'
-import { withDatabase } from '../shared/db'
-import { MovieModel } from '../shared/movies/movie.schema'
-import type { Movie } from '../shared/movies/movie.schema'
 import { parse } from 'node-html-parser'
-import { ShowtimeModel } from '../shared/showtimes/showtime.schema'
+import type { Movie } from '../shared/movies/movie.schema'
 import type { Showtime } from '../shared/showtimes/showtime.schema'
+import { MovieService } from '../shared/movies/movie.service'
+import { NetlifyStore } from '../shared/store/netlify.store'
+import { ShowtimeService } from '../shared/showtimes/showtime.service'
 
 type SpegelnNextData = {
   props: {
@@ -68,91 +68,77 @@ const EXCLUDE_GENRES = [
 ]
 
 export default async (_req: Request) => {
-  return withDatabase(async () => {
-    const fetched = await fetch('https://biografspegeln.se/program')
+  const movieService = new MovieService(new NetlifyStore('movies'))
+  const showtimeService = new ShowtimeService(new NetlifyStore('showtimes'))
 
-    const text = await fetched.text()
+  const fetched = await fetch('https://biografspegeln.se/program')
 
-    const html = parse(text)
+  const text = await fetched.text()
 
-    const script = html.querySelector('script#__NEXT_DATA__')
+  const html = parse(text)
 
-    if (!script) {
-      return
+  const script = html.querySelector('script#__NEXT_DATA__')
+
+  if (!script) {
+    return
+  }
+
+  const json = JSON.parse(script?.rawText) as SpegelnNextData
+
+  const features = json.props.pageProps.programList.features.filter(
+    // Sometimes items are mislabeled as FeatureTypeShow when they should be FeatureTypeMovie
+    // so for now check genres instead
+    // (feature) => feature.info.type === 'FeatureTypeMovie'
+    (feature) =>
+      !feature.info.genres.some(
+        (genre) =>
+          EXCLUDE_GENRES.includes(genre.id) && !!feature.info.audioLanguage
+      )
+  )
+
+  const featureIds = new Set(features.map((feature) => String(feature.id)))
+
+  const models = features.map<Movie>((feature) => {
+    return {
+      title: feature.info.title,
+      sourceId: String(feature.id),
+      sourceName: 'spegeln',
+      duration: feature.info.duration,
+      genres: feature.info.genres
+        ? feature.info.genres.map((genre) => genre.name)
+        : [],
+      url: feature.url,
+      synopsis: feature.info.synopsis
     }
-
-    const json = JSON.parse(script?.rawText) as SpegelnNextData
-
-    const features = json.props.pageProps.programList.features.filter(
-      // Sometimes items are mislabeled as FeatureTypeShow when they should be FeatureTypeMovie
-      // so for now check genres instead
-      // (feature) => feature.info.type === 'FeatureTypeMovie'
-      (feature) =>
-        !feature.info.genres.some(
-          (genre) =>
-            EXCLUDE_GENRES.includes(genre.id) && !!feature.info.audioLanguage
-        )
-    )
-
-    const featureIds = new Set(features.map((feature) => String(feature.id)))
-
-    const models = features.map<Movie>((feature) => {
-      return {
-        title: feature.info.title,
-        sourceId: String(feature.id),
-        sourceName: 'spegeln',
-        duration: feature.info.duration,
-        genres: feature.info.genres
-          ? feature.info.genres.map((genre) => genre.name)
-          : [],
-        url: feature.url,
-        synopsis: feature.info.synopsis
-      }
-    })
-
-    // @ts-expect-error foo
-    const result = await MovieModel.upsertMany(models, {
-      matchFields: ['sourceId']
-    })
-
-    console.log(result)
-
-    const movies = await MovieModel.find({
-      sourceId: models.map((model) => model.sourceId),
-      sourceName: 'spegeln'
-    })
-
-    const moviesBySourceId = new Map(
-      movies.map((movie) => [movie.sourceId, movie])
-    )
-
-    const schedules = json.props.pageProps.programList.schedule.filter(
-      (showtime) =>
-        featureIds.has(String(showtime.featureId)) &&
-        showtime.theme &&
-        !EXCLUDE_THEMES.includes(showtime.theme.id)
-    )
-
-    const showtimes = schedules.flatMap((showtime) =>
-      showtime.dates.map<Showtime>((date) => ({
-        movie: moviesBySourceId.get(String(showtime.featureId)),
-        time: new Date(date.startDate),
-        theater: 'spegeln',
-        soldOut: date.soldOut,
-        url: date.ticksterLink,
-        tags: showtime.theme ? [showtime.theme?.label] : []
-      }))
-    )
-
-    // @ts-expect-error foo
-    await ShowtimeModel.upsertMany(showtimes, {
-      matchFields: ['movie', 'time']
-    })
-
-    return new Response('OK!')
   })
+
+  await movieService.upsertMany(models, 'spegeln')
+
+  const schedules = json.props.pageProps.programList.schedule.filter(
+    (showtime) =>
+      featureIds.has(String(showtime.featureId)) &&
+      showtime.theme &&
+      !EXCLUDE_THEMES.includes(showtime.theme.id)
+  )
+
+  const showtimes = schedules.flatMap((showtime) =>
+    showtime.dates.map<Showtime>((date) => ({
+      movie: `spegeln/${showtime.featureId}`,
+      time: new Date(date.startDate),
+      theater: 'spegeln',
+      soldOut: date.soldOut,
+      url: date.ticksterLink,
+      tags: showtime.theme ? [showtime.theme?.label] : []
+    }))
+  )
+
+  await showtimeService.upsertMany(showtimes, 'spegeln')
+
+  console.log('OK!')
+
+  return new Response('OK!')
 }
 
-// export const config: Config = {
-//   schedule: '@hourly'
-// }
+export const config: Config = {
+  schedule: '@hourly'
+}

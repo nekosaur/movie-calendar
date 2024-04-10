@@ -1,9 +1,9 @@
 import type { Config } from '@netlify/functions'
-import { withDatabase } from '../shared/db'
-import { MovieModel } from '../shared/movies/movie.schema'
 import type { Movie } from '../shared/movies/movie.schema'
-import { ShowtimeModel } from '../shared/showtimes/showtime.schema'
 import type { Showtime } from '../shared/showtimes/showtime.schema'
+import { MovieService } from '../shared/movies/movie.service'
+import { NetlifyStore } from '../shared/store/netlify.store'
+import { ShowtimeService } from '../shared/showtimes/showtime.service'
 
 type FilmstadenMovieJson = {
   items: {
@@ -33,6 +33,8 @@ type FilmstadenShowJson = {
 }
 
 async function scrapeMovies() {
+  const movieService = new MovieService(new NetlifyStore('movies'))
+
   const fetched = await fetch(
     'https://services.cinema-api.com/movie/upcoming/sv/1/1024/false'
   )
@@ -54,20 +56,14 @@ async function scrapeMovies() {
       synopsis: item.longDescription
     }))
 
-  // @ts-expect-error foo
-  await MovieModel.upsertMany(models, {
-    matchFields: ['sourceId']
-  })
-
-  const movies = await MovieModel.find({
-    sourceId: models.map((model) => model.sourceId),
-    sourceName: 'filmstaden'
-  })
+  const movies = await movieService.upsertMany(models, 'filmstaden')
 
   return movies
 }
 
 async function scrapeShowtimes(movies: Movie[]) {
+  const showtimeService = new ShowtimeService(new NetlifyStore('showtimes'))
+
   const moviesBySourceId = new Map(
     movies.map((movie) => [movie.sourceId, movie])
   )
@@ -83,28 +79,25 @@ async function scrapeShowtimes(movies: Movie[]) {
     .map<Showtime>((showtime) => ({
       time: new Date(showtime.utc),
       theater: 'filmstaden',
-      movie: moviesBySourceId.get(showtime.mId),
+      movie: `filmstaden/${moviesBySourceId.get(showtime.mId)!.sourceId}`,
       soldOut: false,
       tags: [],
-      url: moviesBySourceId.get(showtime.mId)?.url
+      url: moviesBySourceId.get(showtime.mId)!.url
     }))
 
-  // @ts-expect-error foo
-  const result = ShowtimeModel.upsertMany(models, {
-    matchFields: ['movie', 'time']
-  })
+  const result = showtimeService.upsertMany(models, 'filmstaden')
 
   return result
 }
 
 export default async (_req: Request) => {
-  return withDatabase(async () => {
-    const movies = await scrapeMovies()
+  const movies = await scrapeMovies()
 
-    await scrapeShowtimes(movies)
+  await scrapeShowtimes(movies)
 
-    return new Response('OK!')
-  })
+  console.log('OK!')
+
+  return new Response('OK!')
 }
 
 // export const config: Config = {

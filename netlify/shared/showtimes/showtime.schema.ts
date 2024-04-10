@@ -11,10 +11,19 @@ export const ShowtimeSchema = new Schema({
   soldOut: Boolean
 })
 
-// TODO: WHY IS BOOLEAN INFERRED AS DATE???
-export type Showtime = Omit<
-  InferSchemaType<typeof ShowtimeSchema>,
-  'soldOut'
-> & { soldOut?: boolean }
+// // TODO: WHY IS BOOLEAN INFERRED AS DATE???
+// export type Showtime = Omit<
+//   InferSchemaType<typeof ShowtimeSchema>,
+//   'soldOut'
+// > & { soldOut?: boolean }
+
+export interface Showtime {
+  time: Date
+  theater: string
+  url: string
+  tags: string[]
+  movie: string
+  soldOut: boolean
+}
 
 export const ShowtimeModel = mongoose.model('Showtime', ShowtimeSchema)

@@ -12,6 +12,16 @@ export const MovieSchema = new Schema({
   synopsis: String
 })
 
-export type Movie = InferSchemaType<typeof MovieSchema>
+// export type Movie = InferSchemaType<typeof MovieSchema>
+
+export interface Movie {
+  title: string
+  sourceName: string
+  sourceId: string
+  duration: number
+  genres: string[]
+  url: string
+  synopsis: string
+}
 
 export const MovieModel = mongoose.model('Movie', MovieSchema)

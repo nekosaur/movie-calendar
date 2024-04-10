@@ -1,5 +1,5 @@
 import { onMounted, ref } from 'vue'
-import { toZonedTime } from 'date-fns-tz'
+// import { toZonedTime } from 'date-fns-tz'
 
 export type Showtime = {
   theater: string
@@ -31,20 +31,24 @@ export function useShowtimes() {
   const isLoading = ref(false)
   const showtimes = ref<ShowtimeEvent[]>([])
 
+  let hasFetched = false
   async function load() {
     try {
+      hasFetched = false
       waitAndExecute(() => {
-        isLoading.value = true
+        !hasFetched && (isLoading.value = true)
       }, 300)
 
-      const response = await fetch('/api/showtimes')
+      const response = await fetch('/api/showtimes-edge')
+
+      hasFetched = true
 
       const json = (await response.json()) as Showtime[]
 
       showtimes.value = json
         .map((showtime: Showtime) => ({
-          start: toZonedTime(showtime.time, 'UTC'),
-          end: toZonedTime(showtime.time, 'UTC'),
+          start: new Date(showtime.time),
+          end: new Date(showtime.time),
           ...showtime
         }))
         .sort((a, b) => a.start.getTime() - b.start.getTime())
