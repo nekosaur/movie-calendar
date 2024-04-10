@@ -1,7 +1,7 @@
 import type { Context } from '@netlify/edge-functions'
-import { NetlifyStore } from '../shared/store/netlify.store'
-import type { Showtime } from '../shared/showtimes/showtime.schema'
-import type { Movie } from '../shared/movies/movie.schema'
+import { NetlifyStore } from '../shared/store/netlify.store.ts'
+import type { Showtime } from '../shared/showtimes/showtime.schema.ts'
+import type { Movie } from '../shared/movies/movie.schema.ts'
 
 export default async (_req: Request, _context: Context) => {
   const showtimeStore = new NetlifyStore<Showtime>('showtimes')

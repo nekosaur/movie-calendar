@@ -1,6 +1,6 @@
-import { BlobStore } from '../store/store.interface'
-import { uuid } from '../uuid'
-import { Showtime } from './showtime.schema'
+import { BlobStore } from '../store/store.interface.ts'
+import { uuid } from '../uuid.ts'
+import { Showtime } from './showtime.schema.ts'
 
 interface Id {
   id: string

@@ -1,5 +1,5 @@
 import { getStore } from '@netlify/blobs'
-import { BlobStore } from './store.interface'
+import { BlobStore } from './store.interface.ts'
 
 export class NetlifyStore<T> implements BlobStore<T> {
   private store: ReturnType<typeof getStore>

@@ -1,4 +1,4 @@
-import { BlobStore } from './store.interface'
+import { BlobStore } from './store.interface.ts'
 
 export class MemoryStore<T = object> implements BlobStore<T> {
   private memory: Record<string, object>

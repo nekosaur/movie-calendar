@@ -1,6 +1,6 @@
-import { BlobStore, Id } from '../store/store.interface'
-import { uuid } from '../uuid'
-import { Movie } from './movie.schema'
+import { BlobStore, Id } from '../store/store.interface.ts'
+import { uuid } from '../uuid.ts'
+import { Movie } from './movie.schema.ts'
 
 export class MovieService {
   constructor(private movieStore: BlobStore<Movie & Id>) {}
