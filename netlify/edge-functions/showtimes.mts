@@ -4,6 +4,7 @@ import type { Showtime } from '../shared/showtimes/showtime.schema.ts'
 import type { Movie } from '../shared/movies/movie.schema.ts'
 
 export default async (_req: Request, _context: Context) => {
+  console.log(_context.geo, _context.server, _context.site)
   const showtimeStore = new NetlifyStore<Showtime>('showtimes')
   const movieStore = new NetlifyStore<Movie>('movies')
   const showtimes = await showtimeStore.list()
