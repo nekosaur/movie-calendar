@@ -1069,7 +1069,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bson@npm:^6.4.0, bson@npm:^6.5.0":
+"bson@npm:^6.4.0":
   version: 6.6.0
   resolution: "bson@npm:6.6.0"
   checksum: 10c0/cb1690c6a72fbda88bc6af97540d5152d8f5c7ce3f004012b3dc8bfc3420a30af8aaf4eee47c731432ab7e470e288d078b0a339bdfe9cab1ebfc7c3bb3dcebc4
@@ -1260,7 +1260,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:4.x, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4":
+"debug@npm:4, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
   dependencies:
@@ -2182,13 +2182,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kareem@npm:2.6.0":
-  version: 2.6.0
-  resolution: "kareem@npm:2.6.0"
-  checksum: 10c0/abdd8129ebeca59963a4bb7f6f2c584465ef123c9c0d4a567a0fd5dc5edf01c15562fdb6a409382885f534f5a19643544924505193848a260109b4ea9157b049
-  languageName: node
-  linkType: hard
-
 "keyv@npm:^4.5.3":
   version: 4.5.4
   resolution: "keyv@npm:4.5.4"
@@ -2481,7 +2474,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongodb@npm:6.5.0, mongodb@npm:^6.5.0":
+"mongodb@npm:^6.5.0":
   version: 6.5.0
   resolution: "mongodb@npm:6.5.0"
   dependencies:
@@ -2515,21 +2508,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongoose@npm:^8.3.0":
-  version: 8.3.0
-  resolution: "mongoose@npm:8.3.0"
-  dependencies:
-    bson: "npm:^6.5.0"
-    kareem: "npm:2.6.0"
-    mongodb: "npm:6.5.0"
-    mpath: "npm:0.9.0"
-    mquery: "npm:5.0.0"
-    ms: "npm:2.1.3"
-    sift: "npm:16.0.1"
-  checksum: 10c0/73f1fcc8b7abf94f40ea76541e7872ee2660932234be6cbcda1ce237a497882fd4a935baed6694b8b71f4a4fdf513f41ad14722ac7960792a3065e7e94799c55
-  languageName: node
-  linkType: hard
-
 "movie-calendar@workspace:.":
   version: 0.0.0-use.local
   resolution: "movie-calendar@workspace:."
@@ -2547,7 +2525,6 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.1.3"
     eslint-plugin-vue: "npm:^9.24.0"
     mongodb: "npm:^6.5.0"
-    mongoose: "npm:^8.3.0"
     node-html-parser: "npm:^6.1.13"
     prettier: "npm:^3.2.5"
     typescript: "npm:^5.2.2"
@@ -2559,33 +2536,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"mpath@npm:0.9.0":
-  version: 0.9.0
-  resolution: "mpath@npm:0.9.0"
-  checksum: 10c0/ac1a77ebbd44567f122fb3026c9647836215d5bb75b54064d1f3d998125644fe7a775b89441b94d4d60f43ad9638a12d830a9e29f36116e93b8cdfd111816e8f
-  languageName: node
-  linkType: hard
-
-"mquery@npm:5.0.0":
-  version: 5.0.0
-  resolution: "mquery@npm:5.0.0"
-  dependencies:
-    debug: "npm:4.x"
-  checksum: 10c0/65b8a92d3b23d9bd1a3d149c3cbd09468e5e5b95d6cff73c1ed2d0a3dc8dce7daa538862ca2a477bf99bbb2197b049becb73d9664b0f7c3dd5472fcd5cb34bca
-  languageName: node
-  linkType: hard
-
 "ms@npm:2.1.2":
   version: 2.1.2
   resolution: "ms@npm:2.1.2"
   checksum: 10c0/a437714e2f90dbf881b5191d35a6db792efbca5badf112f87b9e1c712aace4b4b9b742dd6537f3edf90fd6f684de897cec230abde57e87883766712ddda297cc
-  languageName: node
-  linkType: hard
-
-"ms@npm:2.1.3":
-  version: 2.1.3
-  resolution: "ms@npm:2.1.3"
-  checksum: 10c0/d924b57e7312b3b63ad21fc5b3dc0af5e78d61a1fc7cfb5457edaf26326bf62be5307cc87ffb6862ef1c2b33b0233cdb5d4f01c4c958cc0d660948b65a287a48
   languageName: node
   linkType: hard
 
@@ -3073,13 +3027,6 @@ __metadata:
   version: 3.0.0
   resolution: "shebang-regex@npm:3.0.0"
   checksum: 10c0/1dbed0726dd0e1152a92696c76c7f06084eb32a90f0528d11acd764043aacf76994b2fb30aa1291a21bd019d6699164d048286309a278855ee7bec06cf6fb690
-  languageName: node
-  linkType: hard
-
-"sift@npm:16.0.1":
-  version: 16.0.1
-  resolution: "sift@npm:16.0.1"
-  checksum: 10c0/e3d1a68babf240c2b244687a12a32fa43439e8ec0b1bfa2a93bd0e21c50ed3364f935361a42f3fb850dc1c0fd369bc99bc0a6d15456141717ea29c60d9612289
   languageName: node
   linkType: hard
 

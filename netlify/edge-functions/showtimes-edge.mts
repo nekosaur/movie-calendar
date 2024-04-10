@@ -22,7 +22,12 @@ export default async (_req: Request, _context: Context) => {
 
   const result = await Promise.all(promises)
 
-  return new Response(JSON.stringify(result))
+  return new Response(JSON.stringify(result), {
+    headers: {
+      'Netlify-CDN-Cache-Control':
+        'public, max-age=0, stale-while-revalidate=86400'
+    }
+  })
 }
 
 export const config = { path: '/api/showtimes-edge' }

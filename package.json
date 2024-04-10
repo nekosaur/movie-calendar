@@ -14,7 +14,6 @@
     "@netlify/functions": "^2.6.0",
     "date-fns": "^3.6.0",
     "date-fns-tz": "^3.0.0",
-    "mongoose": "^8.3.0",
     "node-html-parser": "^6.1.13",
     "vue": "^3.4.21",
     "vuetify": "patch:vuetify@npm%3A3.5.14#~/.yarn/patches/vuetify-npm-3.5.14-c576642ecf.patch"
