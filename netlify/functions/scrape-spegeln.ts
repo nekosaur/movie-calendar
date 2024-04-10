@@ -134,11 +134,22 @@ export default async (_req: Request) => {
 
   await showtimeService.upsertMany(showtimes, 'spegeln')
 
+  console.log(
+    JSON.stringify(schedules.slice(0, 5), null, 2),
+    showtimes.slice(0, 5)
+  )
+
+  console.log(
+    Date.parse(schedules[1].dates[0].startDate),
+    new Date(`${schedules[1].dates[0].startDate}`),
+    new Date(`${schedules[1].dates[0].startDate}Z`)
+  )
+
   console.log('OK!')
 
   return new Response('OK!')
 }
 
-export const config: Config = {
-  schedule: '@hourly'
-}
+// export const config: Config = {
+//   schedule: '@hourly'
+// }

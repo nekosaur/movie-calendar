@@ -21,4 +21,10 @@ export class NetlifyStore<T> implements BlobStore<T> {
   public async set(key: string, data: object) {
     return this.store.setJSON(key, data)
   }
+
+  public async clear() {
+    const keys = await this.list()
+
+    await Promise.all(keys.map((key) => this.store.delete(key)))
+  }
 }

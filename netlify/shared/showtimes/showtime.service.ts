@@ -15,7 +15,7 @@ export class ShowtimeService {
     const existingShowtimeIds = new Set(showtimesList)
 
     const promises = models.map<Promise<Showtime & Id>>(async (model) => {
-      const key = `${prefix}/${model.movie}/${model.time.getTime()}`
+      const key = `${model.movie}/${model.time.getTime()}`
 
       if (existingShowtimeIds.has(key)) {
         const existingModel = this.showtimeStore.get(key)

@@ -20,4 +20,8 @@ export class MemoryStore<T = object> implements BlobStore<T> {
   public async set(key: string, data: object) {
     this.memory[key] = data
   }
+
+  public async clear() {
+    this.memory = {}
+  }
 }

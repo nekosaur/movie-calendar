@@ -45,6 +45,8 @@ export function useShowtimes() {
 
       const json = (await response.json()) as Showtime[]
 
+      console.log(json[2].time, new Date(json[2].time))
+
       showtimes.value = json
         .map((showtime: Showtime) => ({
           start: new Date(showtime.time),
