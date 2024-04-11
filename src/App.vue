@@ -29,68 +29,61 @@ function handleClickPrevious() {
 
 <template>
   <v-app>
-    <v-main>
-      <v-container class="d-flex flex-column h-100">
-        <div class="d-flex justify-space-between align-end mb-6">
-          <h1 class="text-h1">Filmkalender</h1>
-          <div class="d-flex align-items">
-            <v-btn variant="outlined" class="mr-4" @click="handleClickPrevious"
-              >Förra månaden</v-btn
-            >
-            <span class="text-h4 mr-4">{{ format(date[0], 'MMMM yyyy') }}</span>
-            <v-btn variant="outlined" @click="handleClickNext"
-              >Nästa månad</v-btn
-            >
-          </div>
-        </div>
-
-        <div :style="{ position: 'relative' }">
-          <v-calendar
-            v-model="date"
-            view-mode="month"
-            :events="showtimes"
-            hide-week-number
-            hide-header
+    <v-main class="d-flex flex-column">
+      <div class="d-flex justify-space-between align-end mb-6">
+        <h1 class="text-h1">Filmkalender</h1>
+        <div class="d-flex align-items">
+          <v-btn variant="outlined" class="mr-4" @click="handleClickPrevious"
+            >Förra månaden</v-btn
           >
-            <template #event="{ event }">
-              <v-chip
-                :class="[
-                  'mb-2',
-                  event.soldOut && 'text-decoration-line-through'
-                ]"
-                tag="div"
-                :color="event.theater === 'spegeln' ? '#2c412f' : '#cc0028'"
-                density="compact"
-                @click="
-                  () => handleShowtimeClick(event as any as ShowtimeEvent)
-                "
-              >
-                {{
-                  format((event as any as ShowtimeEvent).start, 'HH:mm', {
-                    timeZone: 'Europe/Stockholm'
-                  })
-                }}
-                {{ (event as any as ShowtimeEvent).movie.title }}
-              </v-chip>
-            </template>
-          </v-calendar>
-
-          <v-fade-transition>
-            <div
-              v-if="isLoading"
-              class="d-flex align-center justify-center flex-grow-1 w-100 h-100"
-              :style="{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                background: 'rgba(0, 0, 0, 0.05)'
-              }"
-            >
-              <v-progress-circular indeterminate />
-            </div>
-          </v-fade-transition>
+          <span class="text-h4 mr-4">{{ format(date[0], 'MMMM yyyy') }}</span>
+          <v-btn variant="outlined" @click="handleClickNext">Nästa månad</v-btn>
         </div>
-      </v-container>
+      </div>
+
+      <div :style="{ position: 'relative', display: 'flex', flexGrow: 1 }">
+        <v-calendar
+          v-model="date"
+          view-mode="month"
+          :events="showtimes"
+          hide-week-number
+          hide-header
+        >
+          <template #event="{ event, day }">
+            <!-- @vue-ignore day is only typed to object -->
+            <v-chip
+              v-if="!day?.isHidden"
+              :class="['mb-2', event.soldOut && 'text-decoration-line-through']"
+              tag="div"
+              :color="event.theater === 'spegeln' ? '#2c412f' : '#cc0028'"
+              density="compact"
+              @click="() => handleShowtimeClick(event as any as ShowtimeEvent)"
+            >
+              {{
+                format((event as any as ShowtimeEvent).start, 'HH:mm', {
+                  timeZone: 'Europe/Stockholm'
+                })
+              }}
+              {{ (event as any as ShowtimeEvent).movie.title }}
+            </v-chip>
+          </template>
+        </v-calendar>
+
+        <v-fade-transition>
+          <div
+            v-if="isLoading"
+            class="d-flex align-center justify-center flex-grow-1 w-100 h-100"
+            :style="{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              background: 'rgba(0, 0, 0, 0.05)'
+            }"
+          >
+            <v-progress-circular indeterminate />
+          </div>
+        </v-fade-transition>
+      </div>
     </v-main>
 
     <!-- @vue-ignore TODO: why is showtime complaining? it's the same type on both sides -->
@@ -108,6 +101,21 @@ function handleClickPrevious() {
   text-overflow: ellipsis;
   min-width: 0;
   display: block !important;
+}
+
+.v-calendar {
+  flex-grow: 1;
+  display: flex;
+}
+
+.v-calendar__container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.v-calendar-month__days {
+  flex-grow: 1;
 }
 
 .v-calendar-weekly__head-weekday {
