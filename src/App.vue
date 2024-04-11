@@ -30,8 +30,8 @@ function handleClickPrevious() {
 <template>
   <v-app>
     <v-main class="d-flex flex-column">
-      <div class="d-flex justify-space-between align-end mb-6">
-        <h1 class="text-h1">Filmkalender</h1>
+      <div class="d-flex justify-space-between align-end mb-6 mt-4 px-4">
+        <h1 class="text-h2">Filmkalender</h1>
         <div class="d-flex align-items">
           <v-btn variant="outlined" class="mr-4" @click="handleClickPrevious"
             >Förra månaden</v-btn
