@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useShowtimes, ShowtimeEvent } from './hooks/useShowtimes'
+import { useShowtimes, ShowtimeEvent, Showtime } from './hooks/useShowtimes'
 import { useDate, useDisplay } from 'vuetify'
 import { format } from 'date-fns-tz'
 import ShowtimeDetailsDialog from './components/ShowtimeDetailsDialog.vue'
@@ -11,9 +11,9 @@ const { mobile } = useDisplay()
 const date = ref([new Date()])
 
 const showShowtimeDetails = ref(false)
-const showtimeDetails = ref<ShowtimeEvent | null>(null)
+const showtimeDetails = ref<ShowtimeEvent | Showtime | undefined>(undefined)
 
-function handleShowtimeClick(showtime: ShowtimeEvent) {
+function handleShowtimeClick(showtime: ShowtimeEvent | Showtime) {
   showShowtimeDetails.value = true
   showtimeDetails.value = showtime
 }

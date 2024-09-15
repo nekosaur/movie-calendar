@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineModel, toRef, PropType } from 'vue'
 import { useTmdb } from '../hooks/useTmdb'
-import { ShowtimeEvent } from '../hooks/useShowtimes'
+import { Showtime, ShowtimeEvent } from '../hooks/useShowtimes'
 import { useDisplay } from 'vuetify'
 import ShowtimeTags from './ShowtimeTags.vue'
 
@@ -9,7 +9,7 @@ const show = defineModel<boolean>({ default: false })
 
 const props = defineProps({
   showtime: {
-    type: Object as PropType<ShowtimeEvent>,
+    type: Object as PropType<ShowtimeEvent | Showtime>,
     default: () => null
   }
 })
