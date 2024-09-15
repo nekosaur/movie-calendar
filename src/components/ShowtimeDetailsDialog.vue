@@ -2,6 +2,8 @@
 import { defineModel, toRef, PropType } from 'vue'
 import { useTmdb } from '../hooks/useTmdb'
 import { ShowtimeEvent } from '../hooks/useShowtimes'
+import { useDisplay } from 'vuetify'
+import ShowtimeTags from './ShowtimeTags.vue'
 
 const show = defineModel<boolean>({ default: false })
 
@@ -15,29 +17,36 @@ const props = defineProps({
 const { tmdbDetails, isLoading } = useTmdb(
   toRef(() => props.showtime?.movie.title)
 )
+
+const { mobile } = useDisplay()
 </script>
 
 <template>
-  <v-dialog v-model="show" max-width="800">
+  <v-dialog v-model="show" max-width="800" :fullscreen="mobile">
     <v-card>
       <v-card-item>
-        <v-card-title class="d-flex justify-space-between align-center">
+        <v-card-title
+          class="d-flex justify-space-between align-start"
+          :style="{ 'white-space': 'initial' }"
+        >
           {{ props.showtime?.movie.title }}
 
-          <div>
-            <v-chip
-              density="compact"
-              class="text-capitalize"
-              :color="
-                props.showtime?.theater === 'spegeln' ? '#2c412f' : '#cc0028'
-              "
-              >{{ props.showtime?.theater }}</v-chip
-            >
-            <template v-for="tag in props.showtime?.tags" :key="tag">
-              <v-chip density="compact" class="ml-2">{{ tag }}</v-chip>
-            </template>
+          <div v-if="!mobile">
+            <ShowtimeTags :showtime="showtime" />
+          </div>
+          <div v-if="mobile">
+            <v-btn
+              size="small"
+              variant="flat"
+              icon="mdi-close"
+              @click="show = false"
+            />
           </div>
         </v-card-title>
+      </v-card-item>
+
+      <v-card-item class="pt-0">
+        <ShowtimeTags :showtime="showtime" />
       </v-card-item>
 
       <v-card-text>

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useShowtimes, ShowtimeEvent } from './hooks/useShowtimes'
-import { useDate } from 'vuetify'
+import { useDate, useDisplay } from 'vuetify'
 import { format } from 'date-fns-tz'
 import ShowtimeDetailsDialog from './components/ShowtimeDetailsDialog.vue'
+import MobileShowtimes from './components/MobileShowtimes.vue'
 
 const { showtimes, isLoading } = useShowtimes()
+const { mobile } = useDisplay()
 const date = ref([new Date()])
 
 const showShowtimeDetails = ref(false)
@@ -30,21 +32,35 @@ function handleClickPrevious() {
 <template>
   <v-app>
     <v-main class="d-flex flex-column">
-      <div class="d-flex justify-space-between align-end mb-6 mt-4 px-4">
-        <h1 class="text-h2">Filmkalender</h1>
-        <div class="d-flex align-items">
-          <v-btn variant="outlined" class="mr-4" @click="handleClickPrevious"
-            >Förra månaden</v-btn
-          >
-          <span class="text-h4 mr-4">{{ format(date[0], 'MMMM yyyy') }}</span>
-          <v-btn variant="outlined" @click="handleClickNext">Nästa månad</v-btn>
-        </div>
-      </div>
+      <v-container fluid>
+        <v-row>
+          <v-col class="d-flex justify-center justify-lg-start">
+            <h1 class="text-h3 text-lg-h2">Filmkalender</h1>
+          </v-col>
+          <v-col class="d-flex align-center justify-center justify-lg-end">
+            <v-btn variant="outlined" class="mr-4" @click="handleClickPrevious"
+              >Förra {{ !mobile ? 'månaden' : '' }}</v-btn
+            >
+            <span class="text-h6 text-lg-h4 mr-4 text-center">{{
+              format(date[0], 'MMMM yyyy')
+            }}</span>
+            <v-btn variant="outlined" @click="handleClickNext">
+              Nästa {{ !mobile ? 'månad' : '' }}</v-btn
+            >
+          </v-col>
+        </v-row>
+      </v-container>
 
       <div :style="{ position: 'relative', display: 'flex', flexGrow: 1 }">
+        <MobileShowtimes
+          v-if="mobile"
+          :showtimes="showtimes"
+          :date="date"
+          @click="handleShowtimeClick"
+        />
         <v-calendar
+          v-if="!mobile"
           v-model="date"
-          view-mode="month"
           :events="showtimes"
           hide-week-number
           hide-header
