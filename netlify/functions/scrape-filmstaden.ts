@@ -4,6 +4,8 @@ import type { Showtime } from '../shared/showtimes/showtime.schema'
 import { MovieService } from '../shared/movies/movie.service'
 import { NetlifyStore } from '../shared/store/netlify.store'
 import { ShowtimeService } from '../shared/showtimes/showtime.service'
+import { LogService } from '../shared/logs/log.service'
+import { parseJSON } from '../shared/json'
 
 type FilmstadenMovieJson = {
   items: {
@@ -32,14 +34,15 @@ type FilmstadenShowJson = {
   }[]
 }
 
-async function scrapeMovies() {
-  const movieService = new MovieService(new NetlifyStore('movies'))
-
+async function scrapeMovies(
+  movieService: MovieService,
+  logService: LogService
+) {
   const fetched = await fetch(
     'https://services.cinema-api.com/movie/upcoming/sv/1/1024/false'
   )
 
-  const data = (await fetched.json()) as FilmstadenMovieJson
+  const data = await parseJSON<FilmstadenMovieJson>(fetched, logService)
 
   const models = data.items
     .filter(
@@ -61,9 +64,11 @@ async function scrapeMovies() {
   return movies
 }
 
-async function scrapeShowtimes(movies: Movie[]) {
-  const showtimeService = new ShowtimeService(new NetlifyStore('showtimes'))
-
+async function scrapeShowtimes(
+  showtimeService: ShowtimeService,
+  logService: LogService,
+  movies: Movie[]
+) {
   const moviesBySourceId = new Map(
     movies.map((movie) => [movie.sourceId, movie])
   )
@@ -72,7 +77,7 @@ async function scrapeShowtimes(movies: Movie[]) {
     'https://services.cinema-api.com/show/stripped/sv/1/1024/?CountryAlias=se&CityAlias=MA&Channel=Web'
   )
 
-  const data = (await fetched.json()) as FilmstadenShowJson
+  const data = await parseJSON<FilmstadenShowJson>(fetched, logService)
 
   const models = data.items
     .filter((showtime) => moviesBySourceId.has(showtime.mId))
@@ -91,9 +96,16 @@ async function scrapeShowtimes(movies: Movie[]) {
 }
 
 export default async (_req: Request) => {
-  const movies = await scrapeMovies()
+  const logService = new LogService(
+    new NetlifyStore('logs'),
+    'scrape-filmstaden'
+  )
+  const movieService = new MovieService(new NetlifyStore('movies'))
+  const showtimeService = new ShowtimeService(new NetlifyStore('showtimes'))
 
-  await scrapeShowtimes(movies)
+  const movies = await scrapeMovies(movieService, logService)
+
+  await scrapeShowtimes(showtimeService, logService, movies)
 
   console.log('OK!')
 
