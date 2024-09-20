@@ -4,13 +4,18 @@ export async function parseJSON<T>(
   response: Response,
   logService: LogService
 ): Promise<T> {
+  let text: string | null = null
   try {
-    const json = (await response.json()) as unknown as T
+    text = await response.text()
+    const json = JSON.parse(text)
 
-    return json
+    return json as unknown as T
   } catch (e) {
-    const text = await response.text()
-    await logService.create({ message: text, level: 'ERROR', date: new Date() })
+    await logService.create({
+      message: text ?? e?.message ?? 'Unknown error',
+      level: 'ERROR',
+      date: new Date()
+    })
     throw e
   }
 }
