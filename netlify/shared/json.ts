@@ -19,3 +19,24 @@ export async function parseJSON<T>(
     throw e
   }
 }
+
+export async function parseJsonString<T>(
+  json: string | null,
+  logService: LogService
+) {
+  if (!json) {
+    throw new Error('Input JSON is null')
+  }
+  try {
+    const parsed = JSON.parse(json)
+
+    return parsed as unknown as T
+  } catch (err) {
+    await logService.create({
+      message: json ?? err?.message ?? 'Unknown error',
+      level: 'ERROR',
+      date: new Date()
+    })
+    throw err
+  }
+}
