@@ -113,5 +113,5 @@ export default async (_req: Request) => {
 }
 
 export const config: Config = {
-  schedule: '@daily'
+  schedule: '@yearly'
 }
