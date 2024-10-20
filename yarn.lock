@@ -3192,6 +3192,8 @@ __metadata:
     puppeteer-core: "npm:23.1.1"
     puppeteer-extra: "npm:^3.3.6"
     puppeteer-extra-plugin-stealth: "npm:^2.11.2"
+    puppeteer-extra-plugin-user-data-dir: "npm:2.4.1"
+    puppeteer-extra-plugin-user-preferences: "npm:2.4.1"
     typescript: "npm:^5.2.2"
     vite: "npm:^5.2.0"
     vitest: "npm:^1.4.0"
@@ -3696,7 +3698,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer-extra-plugin-user-data-dir@npm:^2.4.1":
+"puppeteer-extra-plugin-user-data-dir@npm:2.4.1, puppeteer-extra-plugin-user-data-dir@npm:^2.4.1":
   version: 2.4.1
   resolution: "puppeteer-extra-plugin-user-data-dir@npm:2.4.1"
   dependencies:
@@ -3716,7 +3718,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer-extra-plugin-user-preferences@npm:^2.4.1":
+"puppeteer-extra-plugin-user-preferences@npm:2.4.1, puppeteer-extra-plugin-user-preferences@npm:^2.4.1":
   version: 2.4.1
   resolution: "puppeteer-extra-plugin-user-preferences@npm:2.4.1"
   dependencies:
